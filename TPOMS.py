@@ -5,7 +5,6 @@ import sys
 import threading
 import signal
 import atexit
-import logging
 
 import config
 from common.redis_client import RedisClient
@@ -30,13 +29,13 @@ if BASE_DIR not in sys.path:
 # SYSTEM LOGGER → CONSOLE ONLY
 # =============================================================================
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="[%(asctime)s] %(levelname)-9s [TPOMS] %(message)s",
-    datefmt="%Y-%m-%d %H:%M:%S"
-)
+# logging.basicConfig(
+#     level=logging.INFO,
+#     format="[%(asctime)s] %(levelname)-9s [TPOMS] %(message)s",
+#     datefmt="%Y-%m-%d %H:%M:%S"
+# )
 
-logging.info("TPOMS process starting")
+print("TPOMS process starting")
 
 redis_client = RedisClient()
 
@@ -286,7 +285,7 @@ def shutdown():
         return
     _shutdown_done = True
 
-    logging.info("Shutting down TPOMS")
+    print("Shutting down TPOMS")
 
     # Use handle_disconnect for each active connector
     for key in list(connectors.keys()):
@@ -294,7 +293,7 @@ def shutdown():
             broker, entity = key.split(":", 1)
             handle_disconnect(broker, entity, connectors.get(key))
         except Exception as e:
-            logging.error(f"Failed to disconnect {key}: {e}")
+            print(f"Failed to disconnect {key}: {e}")
 
 
 # =============================================================================
@@ -305,10 +304,9 @@ def main():
     pubsub = redis_client.connection.pubsub()
     pubsub.subscribe(config.CH_BLITZ_REQUESTS)
 
-    logging.info(f"Listening on {config.CH_BLITZ_REQUESTS}")
+    print(f"Listening on {config.CH_BLITZ_REQUESTS}")
 
     signal.signal(signal.SIGTERM, lambda *_: shutdown())
-    signal.signal(signal.SIGINT, lambda *_: shutdown())
     atexit.register(shutdown)
 
     for message in pubsub.listen():

@@ -3,10 +3,7 @@ Common Request Handler for TPOMS
 Handles receiving, parsing, and validating Blitz TPOMS requests
 """
 import json
-import logging
 from typing import Dict, Optional, Any, Tuple
-
-logger = logging.getLogger("TPOMS")
 
 
 class BlitzRequest:
@@ -21,7 +18,7 @@ class BlitzRequest:
             try:
                 self.payload = json.loads(raw_data)
             except json.JSONDecodeError as e:
-                logger.error(f"Failed to parse JSON: {e}")
+                print(f"Failed to parse JSON: {e}")
                 raise ValueError(f"Invalid JSON format: {e}")
         elif payload:
             self.payload = payload
@@ -75,17 +72,17 @@ class RequestHandler:
             is_valid, error_msg = request.validate()
             
             if not is_valid:
-                logger.warning(f"Invalid request: {error_msg}")
+                print(f"Invalid request: {error_msg}")
                 return None
             
-            logger.info(f"Parsed request: Action={request.action}, TPOmsName={request.tpoms_name}, UserId={request.user_id}")
+            print(f"Parsed request: Action={request.action}, TPOmsName={request.tpoms_name}, UserId={request.user_id}")
             return request
             
         except ValueError as e:
-            logger.error(f"Failed to parse request: {e}")
+            print(f"Failed to parse request: {e}")
             return None
         except Exception as e:
-            logger.error(f"Unexpected error parsing request: {e}")
+            print(f"Unexpected error parsing request: {e}")
             return None
     
     @staticmethod

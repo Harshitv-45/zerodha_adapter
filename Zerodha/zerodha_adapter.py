@@ -131,7 +131,9 @@ class ZerodhaAdapter:
     # ============================================================
     def _start_websocket(self):
         if self.ws:
+            self.logger.info("WS_RESTART | Stopping old WebSocket")
             self.ws.stop()
+            self.ws = None
 
         self.logger.info("WS_START | Starting Zerodha WebSocket")
 
@@ -150,6 +152,7 @@ class ZerodhaAdapter:
     def stop(self):
         if self.ws:
             self.ws.stop()
+            self.ws = None  # Ensure clean state for reconnect
         self.logger.info("Adapter STOP | Zerodha adapter stopped")
 
     # ============================================================
@@ -235,12 +238,15 @@ class ZerodhaAdapter:
             # >>> ADDED: replay early WS update (race fix)
             # ===================================================
             if self.ws and hasattr(self.ws, "pending_ws_updates"):
-                pending = self.ws.pending_ws_updates.pop(str(order_id), None)
+                with self.ws.pending_lock:
+                    pending = self.ws.pending_ws_updates.pop(str(order_id), None)
+                    if pending:
+                        self.logger.info(
+                            "WS_REPLAY | order_id=%s",
+                            order_id
+                        )
+                        # Call _on_order_update outside the lock to avoid deadlock
                 if pending:
-                    self.logger.info(
-                        "WS_REPLAY | order_id=%s",
-                        order_id
-                    )
                     self.ws._on_order_update(None, pending)
             # ===================================================
 

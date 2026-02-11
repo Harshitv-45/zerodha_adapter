@@ -1,9 +1,6 @@
 import redis
 import json
-import logging
 import config
-
-logger = logging.getLogger(__name__)
 
 class RedisClient:
     def __init__(self):
@@ -28,8 +25,7 @@ class RedisClient:
         try:
             payload = json.dumps(message, default=default) if not isinstance(message, str) else message
             self._connection.publish(self._channel, payload)
-            logger.debug(f"Published to {self._channel}")
+
             return True
         except Exception as e:
-            logger.error(f"Failed to publish to {self._channel}: {e}")
             return False

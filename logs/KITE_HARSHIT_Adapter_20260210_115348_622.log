@@ -1,0 +1,38 @@
+[2026-02-10 11:53:48,624] INFO      [HARSHIT] Starting adapter
+[2026-02-10 11:53:48,625] INFO      [HARSHIT] Adapter INIT | Zerodha adapter starting
+[2026-02-10 11:53:48,626] INFO      [HARSHIT] LOGIN_START | Starting Zerodha login
+[2026-02-10 11:53:53,779] INFO      [HARSHIT] LOGIN_SUCCESS | Access token received: 1JibF4TzEEzITSEedCu9dbAG917UhEc3
+[2026-02-10 11:53:53,779] INFO      [HARSHIT] [INSTRUMENTS] CSV already exists
+[2026-02-10 11:53:53,917] INFO      [HARSHIT] [INSTRUMENTS] Loaded 169005 rows
+[2026-02-10 11:53:53,917] INFO      [HARSHIT] INSTRUMENTS_READY | Instruments loaded
+[2026-02-10 11:53:53,917] INFO      [HARSHIT] Adapter READY | Zerodha adapter initialized
+[2026-02-10 11:53:53,917] INFO      [HARSHIT] WS_START | Starting Zerodha WebSocket
+[2026-02-10 11:53:53,987] INFO      [HARSHIT] Adapter connected successfully
+[2026-02-10 11:53:54,062] INFO      [HARSHIT] [WS] Connected to Zerodha
+[2026-02-10 11:54:02,580] INFO      [HARSHIT] COMMAND | action=PLACE_ORDER payload={'Account': '', 'ExchangeClientID': 'HARSHIT', 'ExchangeSegment': 'NSECM', 'ExchangeInstrumentID': 17376, 'SymbolName': 'EXCEL', 'ExchangeInstrumentName': 'EXCEL', 'ProductType': 'CNC', 'OrderType': 'MARKET', 'OrderSide': 'Buy', 'TimeInForce': 'GFD', 'DisclosedQuantity': 0, 'OrderQuantity': 1, 'LimitPrice': 0.0, 'StopPrice': 0.0, 'BlitzAppOrderID': 3156569632, 'AlgoID': '123456789', 'AlgoCategory': '123654789123', 'IsFictiveOrder': 'False'}
+[2026-02-10 11:54:02,581] INFO      [HARSHIT] CACHE_TEMP | blitz_id=3156569632
+[2026-02-10 11:54:02,582] INFO      [HARSHIT] ZERODHA_REST_OUT | payload={'tradingsymbol': 'EXCEL', 'exchange': 'NSE', 'transaction_type': 'BUY', 'order_type': 'MARKET', 'quantity': 1, 'product': 'CNC', 'price': 0.0, 'trigger_price': 0.0, 'validity': 'DAY', 'disclosed_quantity': 0}
+[2026-02-10 11:54:02,732] INFO      [HARSHIT] ZERODHA_REST_IN | payload={'status': 'success', 'data': {'order_id': '260210150939094'}}
+[2026-02-10 11:54:02,733] INFO      [HARSHIT] ORDER_PLACED | blitz=3156569632 zerodha=260210150939094
+[2026-02-10 11:54:02,759] INFO      [HARSHIT] ZERODHA_WS_RESPONSE | payload={'account_id': 'RGZ539', 'unfilled_quantity': 0, 'checksum': '', 'placed_by': 'RGZ539', 'order_id': '260210150939094', 'exchange_order_id': '1100000041775755', 'parent_order_id': None, 'status': 'OPEN', 'status_message': None, 'status_message_raw': None, 'order_timestamp': '2026-02-10 11:54:02', 'exchange_update_timestamp': '2026-02-10 11:54:02', 'exchange_timestamp': '2026-02-10 11:54:02', 'variety': 'regular', 'exchange': 'NSE', 'tradingsymbol': 'EXCEL', 'instrument_token': 4448257, 'order_type': 'MARKET', 'transaction_type': 'BUY', 'validity': 'DAY', 'product': 'CNC', 'quantity': 1, 'disclosed_quantity': 0, 'price': 0, 'trigger_price': 0, 'average_price': 0, 'filled_quantity': 0, 'pending_quantity': 1, 'cancelled_quantity': 0, 'market_protection': 0, 'meta': {}, 'tag': None, 'guid': '205871XCt8Uof3jKY5h'}
+[2026-02-10 11:54:02,759] INFO      [HARSHIT] BLITZ_RESPONSE | order_id=260210150939094 payload={'SequenceNumber': 0, 'Account': '', 'ExchangeClientID': 'HARSHIT', 'BlitzAppOrderID': 3156569632, 'ExchangeOrderID': '260210150939094', 'ExchangeSegment': 'NSECM', 'ExchangeInstrumentID': 17376, 'OrderSide': 'Buy', 'OrderType': 'MARKET', 'ProductType': 'CNC', 'TimeInForce': 'GFD', 'OrderPrice': 0.0, 'OrderQuantity': 1, 'OrderStopPrice': 0.0, 'OrderStatus': 'New', 'OrderAverageTradedPrice': 0, 'LeavesQuantity': 1, 'CumulativeQuantity': 0, 'OrderDisclosedQuantity': 0, 'OrderGeneratedDateTime': None, 'ExchangeTransactTime': '2026-02-10 11:54:02', 'LastUpdateDateTime': '2026-02-10 11:54:02', 'CancelRejectReason': '', 'LastTradedPrice': 0, 'LastTradedQuantity': 0, 'LastExecutionTransactTime': '2026-02-10 11:54:02', 'ExecutionID': '1100000041775755'}
+[2026-02-10 11:54:02,971] INFO      [HARSHIT] [WS] NEW order published | order_id=260210150939094
+[2026-02-10 11:54:02,972] INFO      [HARSHIT] ZERODHA_WS_RESPONSE | payload={'account_id': 'RGZ539', 'unfilled_quantity': 0, 'checksum': '', 'placed_by': 'RGZ539', 'order_id': '260210150939094', 'exchange_order_id': '1100000041775755', 'parent_order_id': None, 'status': 'COMPLETE', 'status_message': None, 'status_message_raw': None, 'order_timestamp': '2026-02-10 11:54:02', 'exchange_update_timestamp': '2026-02-10 11:54:02', 'exchange_timestamp': '2026-02-10 11:54:02', 'variety': 'regular', 'exchange': 'NSE', 'tradingsymbol': 'EXCEL', 'instrument_token': 4448257, 'order_type': 'MARKET', 'transaction_type': 'BUY', 'validity': 'DAY', 'product': 'CNC', 'quantity': 1, 'disclosed_quantity': 0, 'price': 0, 'trigger_price': 0, 'average_price': 1.23, 'filled_quantity': 1, 'pending_quantity': 0, 'cancelled_quantity': 0, 'market_protection': 0, 'meta': {}, 'tag': None, 'guid': '205871XCt8Uof3jKY5h'}
+[2026-02-10 11:54:02,972] INFO      [HARSHIT] BLITZ_RESPONSE | order_id=260210150939094 payload={'SequenceNumber': 0, 'Account': '', 'ExchangeClientID': 'HARSHIT', 'BlitzAppOrderID': 3156569632, 'ExchangeOrderID': '260210150939094', 'ExchangeSegment': 'NSECM', 'ExchangeInstrumentID': 17376, 'OrderSide': 'Buy', 'OrderType': 'MARKET', 'ProductType': 'CNC', 'TimeInForce': 'GFD', 'OrderPrice': 0.0, 'OrderQuantity': 1, 'OrderStopPrice': 0.0, 'OrderStatus': 'Filled', 'OrderAverageTradedPrice': 1.23, 'LeavesQuantity': 0, 'CumulativeQuantity': 1, 'OrderDisclosedQuantity': 0, 'OrderGeneratedDateTime': None, 'ExchangeTransactTime': '2026-02-10 11:54:02', 'LastUpdateDateTime': '2026-02-10 11:54:02', 'CancelRejectReason': '', 'LastTradedPrice': 1.23, 'LastTradedQuantity': 1, 'LastExecutionTransactTime': '2026-02-10 11:54:02', 'ExecutionID': '1100000041775755'}
+[2026-02-10 11:54:09,984] INFO      [HARSHIT] [WS] Stopping WebSocket connection
+[2026-02-10 11:54:09,986] INFO      [HARSHIT] [WS] State cleared
+[2026-02-10 11:54:09,986] INFO      [HARSHIT] Adapter STOP | Zerodha adapter stopped
+[2026-02-10 11:54:11,603] ERROR     [HARSHIT] [WS] Error: 1006 connection was closed uncleanly (WebSocket closing handshake timeout (peer did not finish the opening handshake in time))
+[2026-02-10 11:54:11,603] INFO      [HARSHIT] [WS] Closed manually: 1006 connection was closed uncleanly (WebSocket closing handshake timeout (peer did not finish the opening handshake in time))
+[2026-02-10 11:54:22,539] INFO      [HARSHIT] Starting adapter
+[2026-02-10 11:54:22,541] INFO      [HARSHIT] Adapter INIT | Zerodha adapter starting
+[2026-02-10 11:54:22,544] INFO      [HARSHIT] LOGIN_START | Starting Zerodha login
+[2026-02-10 11:54:26,350] INFO      [HARSHIT] LOGIN_SUCCESS | Access token received: 1JibF4TzEEzITSEedCu9dbAG917UhEc3
+[2026-02-10 11:54:26,351] INFO      [HARSHIT] [INSTRUMENTS] CSV already exists
+[2026-02-10 11:54:26,351] INFO      [HARSHIT] INSTRUMENTS_READY | Instruments loaded
+[2026-02-10 11:54:26,351] INFO      [HARSHIT] Adapter READY | Zerodha adapter initialized
+[2026-02-10 11:54:26,352] INFO      [HARSHIT] WS_START | Starting Zerodha WebSocket
+[2026-02-10 11:54:26,411] INFO      [HARSHIT] Adapter connected successfully
+[2026-02-10 11:57:17,980] INFO      [HARSHIT] [WS] Stopping WebSocket connection
+[2026-02-10 11:57:17,983] INFO      [HARSHIT] [WS] State cleared
+[2026-02-10 11:57:17,983] INFO      [HARSHIT] Adapter STOP | Zerodha adapter stopped

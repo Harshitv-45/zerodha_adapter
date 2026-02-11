@@ -1,5 +1,6 @@
 from kiteconnect import KiteTicker
 from Zerodha.zerodha_mapper import ZerodhaMapper
+import threading
 
 
 class ZerodhaWebSocket:
@@ -24,15 +25,20 @@ class ZerodhaWebSocket:
 
         self.kws = None
         self.is_connected = False
+        self.should_reconnect = True  # Enable auto-reconnect
 
         # order_id -> last known state
         self.order_state_cache = {}
 
         # >>> ADDED: cache WS updates that arrive before REST mapping
         self.pending_ws_updates = {}
+        
+        # >>> ADDED: lock for thread-safe access to pending_ws_updates
+        self.pending_lock = threading.Lock()
 
     # ---------------------------------------------------------
     def start(self):
+        self.should_reconnect = True  # Enable reconnection on start
         ws_token = f"{self.access_token}&user_id={self.user_id}"
 
         self.kws = KiteTicker(self.api_key, ws_token)
@@ -44,8 +50,22 @@ class ZerodhaWebSocket:
         self.kws.connect(threaded=True)
 
     def stop(self):
+        self.should_reconnect = False  # Prevent auto-reconnect on manual stop
         if self.kws:
-            self.kws.close()
+            self.logger.info("[WS] Stopping WebSocket connection")
+            try:
+                self.kws.close()
+                self.is_connected = False
+                
+                # Clear state caches to prevent stale data on reconnect
+                self.order_state_cache.clear()
+                self.pending_ws_updates.clear()
+                self.logger.info("[WS] State cleared")
+                
+            except Exception as e:
+                self.logger.error(f"[WS] Error during stop: {e}")
+            finally:
+                self.kws = None
 
     # ---------------------------------------------------------
     def _on_connect(self, ws, response):
@@ -54,9 +74,28 @@ class ZerodhaWebSocket:
 
     def _on_close(self, ws, code, reason):
         self.is_connected = False
+        
+        # If manual stop (should_reconnect is False), just return silently
+        if not self.should_reconnect:
+            return
+
         self.logger.warning(f"[WS] Closed: {code} {reason}")
+        
+        # Auto-reconnect if needed
+        if self.should_reconnect:
+            self.logger.info("[WS] Reconnecting in 3 seconds...")
+            import time
+            time.sleep(3)
+            if self.kws and self.should_reconnect:
+                try:
+                    self.kws.connect(threaded=True)
+                except Exception as e:
+                    self.logger.error(f"[WS] Reconnection failed: {e}")
 
     def _on_error(self, ws, code, reason):
+        # Suppress error logging during manual stop (expected behavior)
+        if not self.should_reconnect:
+            return
         self.logger.error(f"[WS] Error: {code} {reason}")
 
     # ---------------------------------------------------------
@@ -77,17 +116,19 @@ class ZerodhaWebSocket:
             order_id = str(order_id)
             status = (data.get("status") or "").upper()
 
-            blitz_request = self.request_data_mapping.get(order_id)
+            # >>> CHANGED: Use lock for thread-safe check and cache
+            with self.pending_lock:
+                blitz_request = self.request_data_mapping.get(order_id)
 
-            # >>> CHANGED: cache WS update instead of dropping it
-            if not blitz_request:
-                self.logger.warning(
-                    "ZERODHA_WS_PENDING | order_id=%s payload=%s",
-                    order_id,
-                    data
-                )
-                self.pending_ws_updates[order_id] = data
-                return
+                # >>> CHANGED: cache WS update instead of dropping it
+                if not blitz_request:
+                    self.logger.warning(
+                        "ZERODHA_WS_PENDING | order_id=%s payload=%s",
+                        order_id,
+                        data
+                    )
+                    self.pending_ws_updates[order_id] = data
+                    return
 
             prev = self.order_state_cache.get(order_id)
 
@@ -177,6 +218,37 @@ class ZerodhaWebSocket:
 
                 self.logger.info(
                     f"[WS] CANCEL published | order_id={order_id}"
+                )
+                return
+
+            # =====================================================
+            # REJECTED (Insufficient funds, margin issues, etc.)
+            # =====================================================
+            if status == "REJECTED":
+                order_log = ZerodhaMapper.to_blitz_orderlog(
+                    zerodha_data=data,
+                    blitz_request=blitz_request
+                )
+                order_log.OrderStatus = "Rejected"
+                order_log.LeavesQuantity = 0
+                order_log.CancelRejectReason = data.get("status_message") or "Order rejected"
+
+                self.logger.info(
+                    "BLITZ_RESPONSE | order_id=%s payload=%s",
+                    order_id,
+                    order_log.__dict__
+                )
+
+                self.redis_client.publish(
+                    self.formatter.order_update(order_log)
+                )
+
+                self.order_state_cache[order_id] = {
+                    "status": "REJECTED"
+                }
+
+                self.logger.info(
+                    f"[WS] REJECTED published | order_id={order_id}"
                 )
                 return
 
