@@ -1,0 +1,14 @@
+[2026-02-11 10:38:13,057] INFO      [HARSHIT] Starting adapter
+[2026-02-11 10:38:13,058] INFO      [HARSHIT] Adapter INIT | Zerodha adapter starting
+[2026-02-11 10:38:13,058] INFO      [HARSHIT] LOGIN_START | Starting Zerodha login
+[2026-02-11 10:38:17,656] INFO      [HARSHIT] LOGIN_SUCCESS | Access token received: 0C0k4AL1tDXWuCb4yghyno069ZTau1sp
+[2026-02-11 10:38:17,657] INFO      [HARSHIT] [INSTRUMENTS] CSV already exists
+[2026-02-11 10:38:17,820] INFO      [HARSHIT] [INSTRUMENTS] Loaded 169364 rows
+[2026-02-11 10:38:17,820] INFO      [HARSHIT] INSTRUMENTS_READY | Instruments loaded
+[2026-02-11 10:38:17,820] INFO      [HARSHIT] Adapter READY | Zerodha adapter initialized
+[2026-02-11 10:38:17,820] INFO      [HARSHIT] WS_START | Starting Zerodha WebSocket
+[2026-02-11 10:38:17,901] INFO      [HARSHIT] Adapter connected successfully
+[2026-02-11 10:38:17,975] INFO      [HARSHIT] [WS] Connected to Zerodha
+[2026-02-11 10:40:18,293] INFO      [HARSHIT] [WS] Stopping WebSocket connection
+[2026-02-11 10:40:18,803] INFO      [HARSHIT] [WS] State cleared
+[2026-02-11 10:40:18,804] INFO      [HARSHIT] Adapter STOP | Zerodha adapter stopped

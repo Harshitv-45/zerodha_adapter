@@ -137,25 +137,33 @@ class ZerodhaWebSocket:
             pending_qty = int(data.get("pending_quantity") or 0)
 
             # =====================================================
-            # IGNORE UPDATE (exchange noise)
+            # TRACK UPDATE STATUS (for modify detection)
             # =====================================================
             if status == "UPDATE":
                 self.order_state_cache[order_id] = {
                     **(prev or {}),
+                    "status": "UPDATE",
                     "last_update_seen": True
                 }
                 return
 
             # =====================================================
-            # MODIFY CONFIRMATION → ONE Replaced
+            # MODIFY CONFIRMATION → Replaced
+            # Case 1: UPDATE -> OPEN (order was modified)
+            # Case 2: OPEN -> OPEN with changed price/qty
             # =====================================================
             if (
                 status == "OPEN"
                 and prev
-                and prev.get("status") == "OPEN"
                 and (
-                    price != prev.get("price")
-                    or qty != prev.get("quantity")
+                    prev.get("status") == "UPDATE"
+                    or (
+                        prev.get("status") == "OPEN"
+                        and (
+                            price != prev.get("price")
+                            or qty != prev.get("quantity")
+                        )
+                    )
                 )
             ):
                 order_log = ZerodhaMapper.to_blitz_orderlog(
@@ -163,6 +171,10 @@ class ZerodhaWebSocket:
                     blitz_request=blitz_request
                 )
                 order_log.OrderStatus = "Replaced"
+                
+                # >>> UPDATE: Use NEW price and quantity from WebSocket
+                order_log.OrderPrice = price
+                order_log.OrderQuantity = qty
 
                 self.logger.info(
                     "BLITZ_RESPONSE | order_id=%s payload=%s",
@@ -222,7 +234,7 @@ class ZerodhaWebSocket:
                 return
 
             # =====================================================
-            # REJECTED (Insufficient funds, margin issues, etc.)
+            # REJECTED
             # =====================================================
             if status == "REJECTED":
                 order_log = ZerodhaMapper.to_blitz_orderlog(
